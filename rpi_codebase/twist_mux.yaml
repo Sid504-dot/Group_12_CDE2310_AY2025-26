@@ -1,0 +1,20 @@
+twist_mux:
+  ros__parameters:
+    topics:
+      # dock_controller publishes here during docking and backup.
+      # Priority 100 — always wins when active.
+      # Timeout 0.5s — if dock goes silent, falls through to Nav2.
+      - name:     dock_controller
+        topic:    /cmd_vel_dock
+        timeout:  0.5
+        priority: 100
+
+      # Nav2 controller server publishes here during exploration.
+      # Priority 10 — active only when dock_controller is silent.
+      # Timeout 0.5s — if Nav2 goes silent (paused), output goes to zero.
+      - name:     nav2
+        topic:    /cmd_vel_nav
+        timeout:  0.5
+        priority: 10
+
+    output_topic: /cmd_vel_out   # remapped to /cmd_vel in the launch file

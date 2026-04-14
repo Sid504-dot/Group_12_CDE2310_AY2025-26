@@ -3,7 +3,7 @@
 <package format="3">
   <name>auto_nav</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>Continuous frontier exploration using Nav2 Action Servers</description>
   <maintainer email="nus@todo.todo">nus</maintainer>
   <license>TODO: License declaration</license>
 
@@ -12,10 +12,19 @@
   <test_depend>ament_pep257</test_depend>
   <test_depend>python3-pytest</test_depend>
 
+  <depend>rclpy</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>nav2_msgs</depend>
+  <depend>rclpy_action</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+
   <export>
     <build_type>ament_python</build_type>
-    <exec_depend>rclpy</exec_depend>
-    <exec_depend>geometry_msgs</exec_depend>
-    <exec_depend>sensor_msgs</exec_depend>
   </export>
 </package>
