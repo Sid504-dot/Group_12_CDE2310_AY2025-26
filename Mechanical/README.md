@@ -40,7 +40,7 @@ This document provides detailed instructions for printing, assembling, and integ
 ## Assembly Instructions
 ---
 ### Step 1: Launcher Assembly 
-![Launcher-Assembly.png](Mech_docs/images/img_1776513842427_ca230974ae4b48.png)
+![Launcher-Assembly.png](Mech_Docs/images/img_1776513842427_ca230974ae4b48.png)
   1.  Using an acrylic bender, bend along the 4 construction lines (perpendicular to the longest axis) shown in the image above at 90 degrees
   2.  Bend the acrylic along notch (40mm from bottom) at 25 degrees
   3.  Glue ball caster to bottom of launcher stand
