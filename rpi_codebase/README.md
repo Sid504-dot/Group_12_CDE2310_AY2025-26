@@ -69,41 +69,6 @@ export ROS_DOMAIN_ID=42 && source /opt/ros/humble/setup.bash
 cd ~/turtlebot3_ws/src/py_pubsub/py_pubsub
 python3 launcher_controller_final.py
 ```
-
-## Laptop Terminals
-
-**Terminal 1 — SLAM**
-```bash
-export TURTLEBOT3_MODEL=burger && export ROS_DOMAIN_ID=42
-ros2 launch turtlebot3_cartographer cartographer.launch.py
-```
-
-**Terminal 2 — Nav2**
-```bash
-export ROS_DOMAIN_ID=42
-ros2 launch nav2_bringup navigation_launch.py \
-  params_file:=$HOME/colcon_ws/src/auto_nav/config/nav2_params_frontier.yaml \
-  use_sim_time:=false
-```
-
-**Terminal 3 — Navigation**
-```bash
-export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav nav_try3
-```
-
-**Terminal 4 — Mission Coordinator**
-```bash
-export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav mission_coordinator_v3
-```
-
-**Terminal 5 — Monitor**
-```bash
-export ROS_DOMAIN_ID=42
-ros2 topic echo /mission/state
-```
-
 ---
 
 # Raspberry Pi Code Documentation
