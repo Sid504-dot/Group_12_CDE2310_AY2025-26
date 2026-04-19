@@ -51,7 +51,7 @@ This document provides detailed instructions for printing, assembling, and integ
 ## Assembly Instructions
 ---
 ### Step 1: Launcher Assembly 
-![Launcher-Assembly.png](Mech_Docs/images/img_1776513842427_ca230974ae4b48.png)
+![Launcher-Assembly.png](Mech_Docs/images/Launcher_drawing.png)
 ![Launcher-Bending.png](Mech_Docs/images/Launcher_Bending.png)
 ![Launcher-full.png](Mech_Docs/images/Launcher_full.png)
   1.  Using an acrylic bender, bend along the 4 construction lines (perpendicular to the longest axis) shown in the image above at 90 degrees
