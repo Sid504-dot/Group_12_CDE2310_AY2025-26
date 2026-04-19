@@ -17,6 +17,8 @@ The TurtleBot system was fitted with an AMR workflow and made capable of **carry
 
 ## Problem Definition
 
+![Arena layout showing the maze, mission objectives, and bonus lift station](assets/arena_layout.png)
+
 From the starting point, the TurtleBot navigates through an unknown zone, mapping its way through walls and obstacles while detecting landmarks to execute deliveries:
 
 | Station | Description |
@@ -80,6 +82,10 @@ From the starting point, the TurtleBot navigates through an unknown zone, mappin
 
 Our primary mechanical modification is a **launcher system powered by a 45N solenoid**. Once the RPi Camera (mounted on the robot) detects a mission objective, the docking sequence is initiated. The solenoid briefly activates to strike a ball into the tin, while the hose feeder deposits the next ball via gravity for the subsequent launch.
 
+![TurtleBot3 with launcher system — isometric view](assets/robot_isometric.png)
+
+![TurtleBot3 with launcher system — front view](assets/robot_front.png)
+
 ### Algorithm
 
 The diagram below shows the high-level logic flow of the mission system — from frontier exploration through AprilTag-based station detection, visual-servo docking, and ball launching, to mission completion.
@@ -120,6 +126,10 @@ This repository uses two primary branches:
 ```
 Group_12_CDE2310_AY2025-26/
 ├── assets/               # Images and diagrams referenced in the README
+│   ├── algorithm_flowchart.png
+│   ├── arena_layout.png
+│   ├── robot_isometric.png
+│   └── robot_front.png
 ├── Electrical/           # Electrical schematic and circuitry
 ├── Mechanical/           # Mechanical design files and CAD
 ├── Reflections/          # Team reflections and documentation
