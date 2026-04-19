@@ -44,7 +44,7 @@ This document provides detailed instructions for printing, assembling, and integ
 
 ![Launching_Mechanism.png](Mech_Docs/images/Launching_Mechanism.png)
 
-1. Ping Pong balls line up along the hose and the first ball is load into the launcher (First ball is aligned with center of solenoid)
+1. Ping Pong balls line up along the hose and the first ball is loaded into the launcher (First ball is aligned with center of solenoid)
 2. Solenoid is actuated and plunger hits the ball at the end of its stroke length
 3. Ball is accelerated flies out of launcher into receptacle. Plunger is retracted and next ball falls into place priming for the next shot
 ---
@@ -66,7 +66,7 @@ You may follow the images above as reference
 ![Launcher_Mounting.png](Mech_Docs/images/Launcher_Mounting.png)
   1. Bolt launcher onto the 1st Waffle plate using M3 Hex Allan Screws and Nuts on the mounting points shown above
   2. Cut a slit on hose and fit it into 45mm hole on launcher
-  3. Warp hose around bot and secure hose using zip ties on highest waffle plate
+  3. Wrap hose around bot and secure hose using zip ties on highest waffle plate
 
 ---
 
@@ -95,4 +95,4 @@ You may follow the images above as reference
 ---
 * Design is simple but also incurs greater reliability risk as ball trajectory depends heavily on ball position which is inconsistent and hard to replicate consistently
 * Robot overall size is relatively large for maze which is bad for tight corners. Need to find ways to shorten launcher and feeding mechanism (hose)
-* High energy requirements of solenoid  dictated the need for a secondary power source and hence packaging might be an issue 
+* High energy requirements of solenoid dictated the need for a secondary power source and hence packaging might be an issue 
