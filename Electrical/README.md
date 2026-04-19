@@ -24,7 +24,7 @@ Because the Raspberry Pi operates on 3.3V logic and cannot drive the 12V solenoi
 
 ## Linked Documentation
 
-### [Wiring Diagram and System Architecture](./Electrical_diagram_and_Electronics_system_architecture.pdf)
+### [Wiring Diagram and System Architecture](Electrical/Electrical diagram and Electronics system architecture.pdf)
 Contains the exact schematic detailing the connections between the LiPo batteries, the Raspberry Pi standard interfaces (USB/CSI), OpenCR, and the custom MOSFET driver circuit.
 
 ### [Power Calculation](./Power_calculations_document.pdf)
