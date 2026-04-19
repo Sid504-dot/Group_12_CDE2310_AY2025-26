@@ -131,7 +131,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: Pauses or resumes navigation. Pause is idempotent: it aborts any active backup, cancels any active Nav2 goal, blacklists the current goal, stops the robot, and sets the state to PAUSED. Resume is also idempotent: it clears the current goal and transitions to GAP_SELECT for fresh goal selection.
 
-![_nav_cmd_cb (pause / resume)](flow_chart_diagrams/_nav_cmd_cb.png)
+![_nav_cmd_cb (pause / resume)](../flow_chart_diagrams/_nav_cmd_cb.png)
 
 **_get_pose:**
 
@@ -188,7 +188,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: A tuple (gx, gy) of the best gap goal coordinates, or None if no valid gap exists.
 - Effects: Bins LiDAR rays into 20° sectors, takes the median range per sector, marks sectors with median > 1.0 m as open, clusters adjacent open sectors into contiguous openings, discards openings narrower than 40°, places a goal 0.9 m along the opening's centre direction, then validates and scores all candidates.
 
-![_select_gap (gap detection)](flow_chart_diagrams/_select_gap.png)
+![_select_gap (gap detection)](../flow_chart_diagrams/_select_gap.png)
 
 **_select_frontier:**
 
@@ -203,7 +203,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: The main goal selection loop running at `FRONTIER_HZ`. Publishes the current navigation state. In the `GAP_SELECT` state: rebuilds the costmap if dirty, tries `_select_gap()` first, falls back to `_select_frontier()` if no gap is found. If both fail, clears the normal blacklist and retries. After `NO_FRONTIER_RETRIES` consecutive failures, checks if any frontier cells remain in the map — if none, transitions to DONE. If the state is `NAVIGATING`, checks for goal timeout.
 
-![_goal_tick (goal selection)](flow_chart_diagrams/_goal_tick.png)
+![_goal_tick (goal selection)](../flow_chart_diagrams/_goal_tick.png)
 
 **_send_nav2_goal:**
 
@@ -239,7 +239,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: The stuck detection and backup control loop running at `CONTROL_HZ`. When the state is `NAVIGATING`, it takes periodic position snapshots. If the robot has moved less than `STUCK_DIST` in `STUCK_TIME` seconds, it declares the robot stuck, cancels the Nav2 goal, blacklists the goal, and transitions to `BACKING_UP`. When the state is `BACKING_UP`, it checks rear clearance and either reverses at `BACKUP_SPEED` or nudges forward with a spin if the rear is blocked. After backup completes, the stuck position is added to the stuck-blacklist. If the same region has triggered stuck detection `REGION_STUCK_THRESH` times, the region is buried by adding multiple blacklist entries.
 
-![_control_tick (stuck detection & backup)](flow_chart_diagrams/_control_tick.png)
+![_control_tick (stuck detection & backup)](../flow_chart_diagrams/_control_tick.png)
 
 **_stop:**
 
@@ -401,7 +401,7 @@ The mission orchestration node that coordinates exploration, docking, firing, an
     - **BACKING_UP_DYNAMIC:** Waits for 'backup_done' latch. Sets `dynamic_done = True`, tells detector to ignore dynamic tags, resumes nav, and returns to EXPLORING.
     - **DONE:** No action.
 
-![Mission Coordinator - state machine](flow_chart_diagrams/Mission_Coordinator.png)
+![Mission Coordinator - state machine](../flow_chart_diagrams/Mission_Coordinator.png)
 
 ---
 
@@ -409,7 +409,7 @@ The mission orchestration node that coordinates exploration, docking, firing, an
 
 The following diagram shows the inter-node communication between the remote PC nodes and their connections to the RPi-side nodes.
 
-![ROS2 topics graph](flow_chart_diagrams/ros2_topics_graph.png)
+![ROS2 topics graph](../flow_chart_diagrams/ros2_topics_graph.png)
 
 ### Topic reference
 
