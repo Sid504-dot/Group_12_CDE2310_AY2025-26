@@ -125,18 +125,72 @@ This repository uses two primary branches:
 
 ```
 Group_12_CDE2310_AY2025-26/
-├── assets/               # Images and diagrams referenced in the README
+├── assets/                          # Images and diagrams referenced in the README
 │   ├── algorithm_flowchart.png
 │   ├── arena_layout.png
-│   ├── robot_isometric.png
-│   └── robot_front.png
-├── Electrical/           # Electrical schematic and circuitry
-├── Mechanical/           # Mechanical design files and CAD
-├── Reflections/          # Team reflections and documentation
-└── archive/              # Archived / legacy files
-├── remote_pc_codebase/   # Code running on the laptop/PC (navigation, mission coordinator)
-├── rpi_codebase/         # Code deployed on the Raspberry Pi (AprilTag detection, launcher)
+│   ├── robot_front.png
+│   └── robot_isometric.png
+├── Budget/                          # Project budget documentation
+│   └── budget.md
+├── Electrical/                      # Electrical schematics, circuitry, and documentation
+│   ├── testing_code/
+│   ├── Electrical diagram and Electronics system architecture.pdf
+│   ├── Electrical_documentation.md
+│   └── Power_calculations_document.pdf
+├── Mechanical/                      # Mechanical design files and CAD
+│   ├── CAD Files/
+│   ├── Mech_Docs/images/
+│   ├── Center of Gravity.xlsx
+│   └── Turtlebot_mechanical_documentation.md
+├── Media/                           # Photos and video links
+│   ├── Turtlebot_Pictures/
+│   └── Video_link.md
+├── Reflections/                     # Team reflections and lessons learned
+│   ├── Elec_reflection.md
+│   ├── Mech_reflection.md
+│   └── Software_reflection.md
+├── remote_pc_codebase/              # Code running on the laptop/PC (navigation, mission coordinator)
+│   ├── Code Explanations/           # Developer Guide and Software Design documentation
+│   ├── flow_chart_diagrams/         # Flowchart PNGs for all navigation and mission logic
+│   ├── archive/                     # Archived / legacy navigation files
+│   ├── mission_coordinator_final.py
+│   ├── nav_final.py
+│   ├── nav2_params_frontier.yaml
+│   ├── package.xml
+│   ├── setup.py
+│   └── users.txt
+├── rpi_codebase/                    # Code deployed on the Raspberry Pi (AprilTag detection, docking, launcher)
+│   ├── Code Explanations/           # RPi node documentation
+│   ├── Flowcharts/                  # Flowchart PNGs for RPi node logic
+│   ├── archive_apriltag_code/       # Archived AprilTag detection iterations
+│   ├── archive_docking_code/        # Archived dock controller iterations
+│   ├── archive_launcher_code/       # Archived launcher controller iterations
+│   ├── apriltag_detector_final.py
+│   ├── dock_controller_final.py
+│   ├── launcher_controller_final.py
+│   ├── package.xml
+│   └── setup.py
+├── archive/                         # Top-level archived / legacy files
+├── .gitattributes
+├── .gitignore
+└── README.md
 ```
+
+---
+
+---
+
+## Subsystem Navigation
+
+| Subsystem | Description | Link |
+|-----------|-------------|------|
+| Remote PC Codebase | Navigation node, mission coordinator, Nav2 config | [remote\_pc\_codebase/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/remote_pc_codebase) |
+| RPi Codebase | AprilTag detector, dock controller, launcher controller | [rpi\_codebase/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/rpi_codebase) |
+| Electrical | Schematics, power calculations, electrical documentation | [Electrical/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/Electrical) |
+| Mechanical | CAD files, mechanical documentation, centre of gravity | [Mechanical/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/Mechanical) |
+| Media | Robot photos and video links | [Media/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/Media) |
+| Budget | Project budget breakdown | [Budget/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/Budget) |
+| Reflections | Electrical, mechanical and software reflections | [Reflections/](https://github.com/Sid504-dot/Group_12_CDE2310_AY2025-26/tree/main/Reflections) |
 
 ---
 
