@@ -114,7 +114,7 @@ The following section describes the high-level design of the three RPi nodes tha
 
 The diagram below shows how all ROS 2 nodes communicate via topics. Solid purple arrows indicate status messages flowing from the RPi to the Laptop; dashed blue arrows indicate commands flowing from the Laptop back to the RPi.
 
-![System Architecture](./overall_architecture.svg)
+![System Architecture](rpi_codebase/Flowcharts/System_architecture & Nodes.png)
 
 ---
 
@@ -147,7 +147,7 @@ Runs continuously on the RPi. Subscribes to raw camera frames, detects AprilTags
 * `_image_cb` : Main image processing callback. Decodes the ROS Image encoding to a numpy array, converts to grayscale using proper luminance weights (0.299 R + 0.587 G + 0.114 B), runs the AprilTag detector, filters out low-margin detections, classifies each tag, computes 3-D distance and yaw offset from `pose_t`, and publishes accepted detections as JSON.
 * `_classify` : Maps a numeric tag ID to a human-readable type string (`'static'`, `'dynamic_dock'`, `'dynamic_receptacle'`, or `'unknown'`).
 
-![_image_cb flow chart](./apriltag_image_cb_flow.svg)
+![_image_cb flow chart](rpi_codebase/Flowcharts/AprilTag control flow.png)
 
 ---
 
@@ -194,7 +194,7 @@ Runs a 50 Hz control loop on the RPi. Implements a two-level state machine: an *
 * `_phase_approach` : Drives forward or reverse with a bidirectional P-controller on distance error and a gentle yaw correction (FIX-8). Enforces a `MIN_VX` deadband floor. Aborts to `COARSE_YAW` if yaw drifts past `YAW_DRIFT_LIMIT`.
 * `_phase_hold` : Keeps the robot stopped and accumulates in-tolerance ticks toward `DOCKED_CONFIRM_TICKS`. Decays the counter on out-of-tolerance ticks and escapes to `APPROACH` (large distance error) or `COARSE_YAW` (yaw drift, FIX-7).
 
-![Dock controller FSM flow chart](./dock_controller_fsm_flow.svg)
+![Dock controller FSM flow chart](rpi_codebase/Flowcharts/Docking control flow.png)
 
 ---
 
@@ -226,4 +226,4 @@ Runs on the RPi. Receives fire commands on `/mission/launch_command` and pulses 
 * `_fire_one_ball` : Low-level helper. Sets the GPIO pin HIGH for `FIRE_PULSE_DURATION` seconds, then LOW. Returns immediately if `firing` has been cleared.
 * `_set_pin` : Sets GPIO BCM pin 21 HIGH or LOW. Falls back to a log message in simulation mode (when `gpio_ok` is `False`).
 
-![Launcher flow chart](./launcher_flow.svg)
+![Launcher flow chart](rpi_codebase/Flowcharts/Launcher control flow.png)
