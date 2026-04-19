@@ -11,9 +11,9 @@
 
 ## System Overview
 
-The solenoid firing system uses the Raspberry Pi GPIO pin as a low-current control signal. The GPIO pin does not power the solenoid directly. Instead, it drives the gate of the IRFZ44N N-channel MOSFET, which switches the higher-current solenoid circuit.
+The solenoid firing system uses the Raspberry Pi GPIO pin as a low-current control signal. The GPIO pin does not power the solenoid directly. Instead, the GPIO pin drives the gate of the IRFZ44N N-channel MOSFET, which switches the higher-current solenoid circuit.
 
-A separate 12.6 V battery/power source is used for the JF-0826B solenoid. This isolates the solenoid’s high-current switching load from the TurtleBot/OpenCR power rail and reduces the risk of voltage sag, brownout, or unstable behaviour in the Raspberry Pi and OpenCR.
+A separate 12.6 V, 1800 mAh battery/power source is used for the JF-0826B solenoid. This isolates the solenoid's high-current switching load from the TurtleBot/OpenCR power rail, reducing the risk of voltage sag, brownout, or unstable behaviour in the Raspberry Pi and OpenCR.
 
 ## Linked Documentation
 
@@ -23,8 +23,16 @@ A separate 12.6 V battery/power source is used for the JF-0826B solenoid. This i
 
 ### Power Calculation
 
-[Power Calculation](./Power_calculations.pdf)
+[Power Calculation](./Power_calculations_document.pdf)
 
 ### Component Testing Scripts
 
 [Component Testing](./testing_code)
+
+### Schematic
+
+[Schematic](./Schematic)
+
+### Test Image
+
+[Test Image](./test.jpg)
