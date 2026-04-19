@@ -786,67 +786,10 @@ Setting `obstacle_max_range` larger than `raytrace_max_range` caused cells to be
 
 ## System Launch Architecture
 
-The system requires four terminal sessions started in order:
-
-```
-Terminal 1 — SLAM:
-export TURTLEBOT3_MODEL=burger && export ROS_DOMAIN_ID=42
-ros2 launch turtlebot3_cartographer cartographer.launch.py
-```
-Starts Cartographer SLAM, which builds the occupancy grid published to `/map`. Must start first so the map is available before Nav2 and the navigation node initialise.
-
-```
-Terminal 2 — Nav2:
-export ROS_DOMAIN_ID=42
-ros2 launch nav2_bringup navigation_launch.py \
-  params_file:=$HOME/colcon_ws/src/auto_nav/config/nav2_params_frontier.yaml \
-  use_sim_time:=false
-```
-Starts the Nav2 stack (global planner, MPPI controller, costmap servers, recovery behaviours). Must start after Cartographer is publishing `/map`.
-
-```
-Terminal 3 — Navigation:
-export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav nav_final
-```
-Starts `Nav2GapNav`. Begins in IDLE state and waits for a valid map before selecting any goals.
-
-```
-Terminal 4 — Mission Coordinator:
-export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav mission_coordinator_final
-```
-Starts `MissionCoordinator`. Begins in EXPLORING state and immediately listens for AprilTag detections from the RPi.
-
-RPi-side nodes are launched separately on the Raspberry Pi with `ROS_DOMAIN_ID=42` set on both machines.
+For terminal commands and the full launch order, see the **Laptop Terminals** section in [Developer Guide.md](Developer%20Guide.md). Terminals must be started in order: SLAM → Nav2 → Navigation node → Mission Coordinator. RPi-side nodes are launched separately on the Raspberry Pi with `ROS_DOMAIN_ID=42` set on both machines.
 
 ---
 
 ## Visualisation and Debugging
 
-### Monitoring Navigation State
-
-```bash
-ros2 topic echo /mission/nav_state
-```
-Expected sequence during normal operation: `IDLE` → `GAP_SELECT` → `NAVIGATING` → `GAP_SELECT` → ... → `DONE`
-
-### Monitoring Mission State
-
-```bash
-ros2 topic echo /mission/state
-```
-
-### Checking Tag Detections
-
-```bash
-ros2 topic echo /apriltag/detections
-```
-Each message is a JSON string with a `tags` list. Each tag entry contains `id`, `type`, and `dist`.
-
-### Manual Pause and Resume
-
-```bash
-ros2 topic pub --once /mission/nav_command std_msgs/String "data: 'pause'"
-ros2 topic pub --once /mission/nav_command std_msgs/String "data: 'resume'"
-```
+For monitoring commands (`ros2 topic echo`), manual pause/resume testing, and `TEST_MODE` usage, see the **Testing guide** section in [Developer Guide.md](Developer%20Guide.md).
