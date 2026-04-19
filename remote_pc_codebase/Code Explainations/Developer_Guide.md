@@ -1,4 +1,4 @@
-# Developer Guide for Turtlebot ICBM Navigation and Mission Control
+# Developer Guide for Turtlebot's Navigation and Mission Coordinator (FSM)
 
 This document describes the high-level design of the navigation and mission control constructs for the Turtlebot ICBM. The system runs across two platforms: the remote PC (laptop) handles navigation and mission coordination, while the Raspberry Pi handles AprilTag detection, dock control, and launcher control. This guide covers the remote PC codebase only.
 
