@@ -44,6 +44,8 @@ ros2 topic echo /mission/state
 
 The main navigation control node for the Turtlebot ICBM. It performs autonomous frontier exploration using a gap-first strategy: LiDAR openings are prioritised over map-based frontiers. All path execution is delegated to Nav2 (SmacPlanner2D + MPPIController).
 
+> For algorithm rationale, design decisions, Nav2 configuration, and tuning guidance on when and why to change these values, see [Software_design.md](Software_design.md).
+
 ### Tunable parameters
 
 - `FRONTIER_HZ` : The frequency (Hz) of the goal selection timer. Default: 2.0.
@@ -261,12 +263,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 
 The mission orchestration node that coordinates exploration, docking, firing, and backing up for both static and dynamic targets. It communicates with the navigation node via pause/resume commands and with RPi-side nodes (AprilTag detector, dock controller, launcher controller) via JSON-over-String topics.
 
-### Key design decisions
-
-- **No static-first gate (V3):** Unlike earlier versions, the mission coordinator will dock and fire at whichever target type (static or dynamic) is detected first. If both are visible simultaneously, static is checked first as a conservative priority.
-- **All inter-node communication uses `std_msgs/String` with JSON** to avoid custom message type compilation overhead on the Raspberry Pi.
-- **Dock lost debouncing:** The dock status must remain 'lost' for `DOCK_LOST_DEBOUNCE_S` seconds before the coordinator aborts. This prevents transient detection gaps from causing premature resets.
-- **Dock timeout:** If the entire dock+fire cycle exceeds `DOCK_TIMEOUT_S`, the coordinator aborts and resumes navigation without marking the target as done (allowing retry).
+> For FSM design rationale, state-by-state walk-throughs, and tuning guidance, see [Software_design.md](Software_design.md).
 
 ### Tunable parameters
 

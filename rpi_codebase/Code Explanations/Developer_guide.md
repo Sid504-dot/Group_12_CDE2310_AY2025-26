@@ -79,7 +79,7 @@ The following section describes the high-level design of the three RPi nodes tha
 
 The diagram below shows how all ROS 2 nodes communicate via topics. Solid purple arrows indicate status messages flowing from the RPi to the Laptop; dashed blue arrows indicate commands flowing from the Laptop back to the RPi.
 
-![System Architecture](../Flowcharts/System_architecture%20%26%20Nodes.png)
+![System Architecture](../Flowcharts/System_architecture.png)
 
 ---
 
