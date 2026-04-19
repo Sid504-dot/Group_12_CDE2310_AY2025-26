@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-dock_controller.py — Runs on RPi
+dock_controller1.py — Runs on RPi
 ==================================
 Subscribes to /apriltag/detections and /mission/dock_command.
 When commanded to dock, uses visual servoing to:
