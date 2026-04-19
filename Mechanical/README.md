@@ -44,7 +44,7 @@ This document provides detailed instructions for printing, assembling, and integ
 
 ![Launching_Mechanism.png](Mech_Docs/images/Launching_Mechanism.png)
 
-1. Ping Pong balls line up along the hose and the first ball is load into the launcher (First ball is aligned with center of solenoid)
+1. Ping Pong balls line up along the hose and the first ball is loaded into the launcher (First ball is aligned with center of solenoid)
 2. Solenoid is actuated and plunger hits the ball at the end of its stroke length
 3. Ball is accelerated flies out of launcher into receptacle. Plunger is retracted and next ball falls into place priming for the next shot
 ---
@@ -53,17 +53,20 @@ This document provides detailed instructions for printing, assembling, and integ
 ### Step 1: Launcher Assembly 
 ![Launcher-Assembly.png](Mech_Docs/images/img_1776513842427_ca230974ae4b48.png)
 ![Launcher-Bending.png](Mech_Docs/images/Launcher_Bending.png)
+![Launcher-full.png](Mech_Docs/images/Launcher_full.png)
   1.  Using an acrylic bender, bend along the 4 construction lines (perpendicular to the longest axis) shown in the image above at 90 degrees
   2.  Bend the acrylic along notch (40mm from bottom) at 25 degrees
   3.  Glue ball caster to bottom of launcher stand
   4.  Glue launcher stand along barrel of launcher until desired height
-  5.  Glue Solenoid and Solenoid Holder in barrel 
+  5.  Glue Solenoid and Solenoid Holder in barrel
+
+You may follow the images above as reference
 
 ### Step 2: Installing Launcher
 ![Launcher_Mounting.png](Mech_Docs/images/Launcher_Mounting.png)
   1. Bolt launcher onto the 1st Waffle plate using M3 Hex Allan Screws and Nuts on the mounting points shown above
   2. Cut a slit on hose and fit it into 45mm hole on launcher
-  3. Warp hose around bot and secure hose using zip ties on highest waffle plate
+  3. Wrap hose around bot and secure hose using zip ties on highest waffle plate
 
 ---
 
@@ -92,4 +95,4 @@ This document provides detailed instructions for printing, assembling, and integ
 ---
 * Design is simple but also incurs greater reliability risk as ball trajectory depends heavily on ball position which is inconsistent and hard to replicate consistently
 * Robot overall size is relatively large for maze which is bad for tight corners. Need to find ways to shorten launcher and feeding mechanism (hose)
-* High energy requirements of solenoid  dictated the need for a secondary power source and hence packaging might be an issue 
+* High energy requirements of solenoid dictated the need for a secondary power source and hence packaging might be an issue 
