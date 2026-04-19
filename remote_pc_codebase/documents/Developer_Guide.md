@@ -21,13 +21,13 @@ ros2 launch nav2_bringup navigation_launch.py \
 **Terminal 3 — Navigation**
 ```bash
 export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav nav_try3
+ros2 run auto_nav nav_final
 ```
 
 **Terminal 4 — Mission Coordinator**
 ```bash
 export ROS_DOMAIN_ID=42 && source ~/colcon_ws/install/setup.bash
-ros2 run auto_nav mission_coordinator_v3
+ros2 run auto_nav mission_coordinator_final
 ```
 
 **Terminal 5 — Monitor**
@@ -35,6 +35,8 @@ ros2 run auto_nav mission_coordinator_v3
 export ROS_DOMAIN_ID=42
 ros2 topic echo /mission/state
 ```
+
+---
 
 ## Nav2GapNav Node
 
@@ -129,7 +131,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: Pauses or resumes navigation. Pause is idempotent: it aborts any active backup, cancels any active Nav2 goal, blacklists the current goal, stops the robot, and sets the state to PAUSED. Resume is also idempotent: it clears the current goal and transitions to GAP_SELECT for fresh goal selection.
 
-![Pause / resume flowchart](flow_chart_diagrams/pause_resume_flowchart.png)
+![_nav_cmd_cb (pause / resume)](flow_chart_diagrams/_nav_cmd_cb_pause_resume_.png)
 
 **_get_pose:**
 
@@ -186,7 +188,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: A tuple (gx, gy) of the best gap goal coordinates, or None if no valid gap exists.
 - Effects: Bins LiDAR rays into 20° sectors, takes the median range per sector, marks sectors with median > 1.0 m as open, clusters adjacent open sectors into contiguous openings, discards openings narrower than 40°, places a goal 0.9 m along the opening's centre direction, then validates and scores all candidates.
 
-![Gap detection flowchart](flow_chart_diagrams/gap_detection_flowchart.png)
+![_select_gap (gap detection)](flow_chart_diagrams/_select_gap_gap_detection_.png)
 
 **_select_frontier:**
 
@@ -201,7 +203,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: The main goal selection loop running at `FRONTIER_HZ`. Publishes the current navigation state. In the `GAP_SELECT` state: rebuilds the costmap if dirty, tries `_select_gap()` first, falls back to `_select_frontier()` if no gap is found. If both fail, clears the normal blacklist and retries. After `NO_FRONTIER_RETRIES` consecutive failures, checks if any frontier cells remain in the map — if none, transitions to DONE. If the state is `NAVIGATING`, checks for goal timeout.
 
-![Goal selection flowchart](flow_chart_diagrams/goal_selection_flowchart.png)
+![_goal_tick (goal selection)](flow_chart_diagrams/_goal_tick__goal_selection_.png)
 
 **_send_nav2_goal:**
 
@@ -237,7 +239,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: The stuck detection and backup control loop running at `CONTROL_HZ`. When the state is `NAVIGATING`, it takes periodic position snapshots. If the robot has moved less than `STUCK_DIST` in `STUCK_TIME` seconds, it declares the robot stuck, cancels the Nav2 goal, blacklists the goal, and transitions to `BACKING_UP`. When the state is `BACKING_UP`, it checks rear clearance and either reverses at `BACKUP_SPEED` or nudges forward with a spin if the rear is blocked. After backup completes, the stuck position is added to the stuck-blacklist. If the same region has triggered stuck detection `REGION_STUCK_THRESH` times, the region is buried by adding multiple blacklist entries.
 
-![Stuck detection flowchart](flow_chart_diagrams/stuck_detection_flowchart.png)
+![_control_tick (stuck detection & backup)](flow_chart_diagrams/_control_tick.png)
 
 **_stop:**
 
@@ -399,7 +401,7 @@ The mission orchestration node that coordinates exploration, docking, firing, an
     - **BACKING_UP_DYNAMIC:** Waits for 'backup_done' latch. Sets `dynamic_done = True`, tells detector to ignore dynamic tags, resumes nav, and returns to EXPLORING.
     - **DONE:** No action.
 
-![Mission coordinator state machine](flow_chart_diagrams/mission_coordinator_state_machine.png)
+![Mission Coordinator - state machine](flow_chart_diagrams/Mission_Coordinator_-_state_machine.png)
 
 ---
 
@@ -440,19 +442,19 @@ To test certain components of the system, it is recommended to use the `TEST_MOD
 
 2. Build the package in the designated workspace.
 
-```
+```bash
 $ cd ~/colcon_ws
 $ colcon build
 $ source install/setup.bash
 ```
 
-3. Run the nodes as described in the run order above.
+3. Run the nodes as described in the terminal commands above.
 
 4. To test navigation independently (without mission coordination), run only Terminals 1–3. The navigation node will explore autonomously without pausing for docking.
 
 5. To test the mission coordinator's pause/resume integration, publish manual commands:
 
-```
+```bash
 $ ros2 topic pub --once /mission/nav_command std_msgs/String "data: 'pause'"
 $ ros2 topic pub --once /mission/nav_command std_msgs/String "data: 'resume'"
 ```
