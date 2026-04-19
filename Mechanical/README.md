@@ -42,7 +42,7 @@ This document provides detailed instructions for printing, assembling, and integ
 ---
 ## Launching Mechanism
 
-![Launching_Mechanism.png](images/img_1776578091472_bc44aac7df02a.png)
+![Launching_Mechanism.png](Mech_Docs/images/Launching_Mechanism.png)
 
 1. Ping Pong balls line up along the hose and the first ball is load into the launcher (First ball is aligned with center of solenoid)
 2. Solenoid is actuated and plunger hits the ball at the end of its stroke length
@@ -51,8 +51,8 @@ This document provides detailed instructions for printing, assembling, and integ
 ## Assembly Instructions
 ---
 ### Step 1: Launcher Assembly 
-![Launcher-Assembly.png](images/img_1776513842427_ca230974ae4b48.png)
-![Launcher-Bending.png](images/img_1776526350981_578bfff5657fe8.png)
+![Launcher-Assembly.png](Mech_Docs/images/img_1776513842427_ca230974ae4b48.png)
+![Launcher-Bending.png](Mech_Docs/images/Launcher_Bending.png)
   1.  Using an acrylic bender, bend along the 4 construction lines (perpendicular to the longest axis) shown in the image above at 90 degrees
   2.  Bend the acrylic along notch (40mm from bottom) at 25 degrees
   3.  Glue ball caster to bottom of launcher stand
@@ -60,7 +60,7 @@ This document provides detailed instructions for printing, assembling, and integ
   5.  Glue Solenoid and Solenoid Holder in barrel 
 
 ### Step 2: Installing Launcher
-![Launcher_Mounting.png](images/img_1776529371125_32595878f3d078.png)
+![Launcher_Mounting.png](Mech_Docs/images/Launcher.png)
   1. Bolt launcher onto the 1st Waffle plate using M3 Hex Allan Screws and Nuts on the mounting points shown above
   2. Cut a slit on hose and fit it into 45mm hole on launcher
   3. Warp hose around bot and secure hose using zip ties on highest waffle plate
