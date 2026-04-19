@@ -53,11 +53,14 @@ This document provides detailed instructions for printing, assembling, and integ
 ### Step 1: Launcher Assembly 
 ![Launcher-Assembly.png](Mech_Docs/images/img_1776513842427_ca230974ae4b48.png)
 ![Launcher-Bending.png](Mech_Docs/images/Launcher_Bending.png)
+![Launcher-full.png](Mech_Docs/images/Launcher_full.png)
   1.  Using an acrylic bender, bend along the 4 construction lines (perpendicular to the longest axis) shown in the image above at 90 degrees
   2.  Bend the acrylic along notch (40mm from bottom) at 25 degrees
   3.  Glue ball caster to bottom of launcher stand
   4.  Glue launcher stand along barrel of launcher until desired height
-  5.  Glue Solenoid and Solenoid Holder in barrel 
+  5.  Glue Solenoid and Solenoid Holder in barrel
+
+You may follow the images above as reference
 
 ### Step 2: Installing Launcher
 ![Launcher_Mounting.png](Mech_Docs/images/Launcher_Mounting.png)
