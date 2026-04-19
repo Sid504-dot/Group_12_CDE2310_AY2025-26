@@ -44,7 +44,7 @@ ros2 topic echo /mission/state
 
 The main navigation control node for the Turtlebot ICBM. It performs autonomous frontier exploration using a gap-first strategy: LiDAR openings are prioritised over map-based frontiers. All path execution is delegated to Nav2 (SmacPlanner2D + MPPIController).
 
-> For algorithm rationale, design decisions, Nav2 configuration, and tuning guidance on when and why to change these values, see [Software Design.md](Software%20Design.md).
+> For algorithm rationale, design decisions, Nav2 configuration, and tuning guidance on when and why to change these values, see [Software_design.md](Software_design.md).
 
 ### Tunable parameters
 
@@ -263,7 +263,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 
 The mission orchestration node that coordinates exploration, docking, firing, and backing up for both static and dynamic targets. It communicates with the navigation node via pause/resume commands and with RPi-side nodes (AprilTag detector, dock controller, launcher controller) via JSON-over-String topics.
 
-> For FSM design rationale, state-by-state walk-throughs, and tuning guidance, see [Software Design.md](Software%20Design.md).
+> For FSM design rationale, state-by-state walk-throughs, and tuning guidance, see [Software_design.md](Software_design.md).
 
 ### Tunable parameters
 
