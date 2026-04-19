@@ -1,4 +1,4 @@
-# Autonomous Mobile Robots (AMRs) — Intralogistics in a Smart IoT 4.0 Warehouse
+# Mission Overview & Objectives
 ### CDE2310 — Fundamentals of Systems Design | AY 2025–26 | Group 12
 
 ---
