@@ -401,7 +401,7 @@ The mission orchestration node that coordinates exploration, docking, firing, an
     - **BACKING_UP_DYNAMIC:** Waits for 'backup_done' latch. Sets `dynamic_done = True`, tells detector to ignore dynamic tags, resumes nav, and returns to EXPLORING.
     - **DONE:** No action.
 
-![Mission Coordinator - state machine](flow_chart_diagrams/Mission_Coordinator_-_state_machine.png)
+![Mission Coordinator - state machine](flow_chart_diagrams/Mission_Coordinator.png)
 
 ---
 
