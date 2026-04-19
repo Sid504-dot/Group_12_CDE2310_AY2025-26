@@ -60,7 +60,7 @@ This document provides detailed instructions for printing, assembling, and integ
   5.  Glue Solenoid and Solenoid Holder in barrel 
 
 ### Step 2: Installing Launcher
-![Launcher_Mounting.png](Mech_Docs/images/Launcher.png)
+![Launcher_Mounting.png](Mech_Docs/images/Launcher_Mounting.png)
   1. Bolt launcher onto the 1st Waffle plate using M3 Hex Allan Screws and Nuts on the mounting points shown above
   2. Cut a slit on hose and fit it into 45mm hole on launcher
   3. Warp hose around bot and secure hose using zip ties on highest waffle plate
