@@ -24,11 +24,11 @@ Because the Raspberry Pi operates on 3.3V logic and cannot drive the 12V solenoi
 
 ## Linked Documentation
 
-### [Wiring Diagram and System Architecture](Electrical/Electrical diagram and Electronics system architecture.pdf)
+### [Wiring Diagram and System Architecture](Electrical%20diagram%20and%20Electronics%20system%20architecture.pdf)
 Contains the exact schematic detailing the connections between the LiPo batteries, the Raspberry Pi standard interfaces (USB/CSI), OpenCR, and the custom MOSFET driver circuit.
 
-### [Power Calculation](./Power_calculations_document.pdf)
+### [Power Calculation](Power_calculations_document.pdf)
 Details the expected power draw of the robot's states (boot, standby, teleop) and mathematically proves that the dedicated 1800 mAh solenoid battery provides more than enough energy margin for a 25-minute mission under pulsed conditions.
 
-### [Component Testing Scripts](./testing_code)
+### [Component Testing Scripts](testing_code)
 Contains `solenoid_test.py`, a basic ON/OFF hardware validation script using the `RPi.GPIO` library to safely verify the MOSFET switching logic before full integration into the ROS 2 Humble navigation stack.
