@@ -1,6 +1,6 @@
 # Software Design — Remote PC Codebase
 
-This document describes the high-level design rationale behind the autonomous navigation and mission control system. It covers algorithm choices, key design decisions, safety mechanisms, Nav2 configuration, and tuning guidance. For the detailed API reference (parameters, attributes, methods), see [Developer Guide.md](Developer%20Guide.md).
+This document describes the high-level design rationale behind the autonomous navigation and mission control system. It covers algorithm choices, key design decisions, safety mechanisms, Nav2 configuration, and tuning guidance. For the detailed API reference (parameters, attributes, methods), see [Developer_Guide.md](Developer_Guide.md).
 
 ---
 
@@ -786,10 +786,10 @@ Setting `obstacle_max_range` larger than `raytrace_max_range` caused cells to be
 
 ## System Launch Architecture
 
-For terminal commands and the full launch order, see the **Laptop Terminals** section in [Developer Guide.md](Developer%20Guide.md). Terminals must be started in order: SLAM → Nav2 → Navigation node → Mission Coordinator. RPi-side nodes are launched separately on the Raspberry Pi with `ROS_DOMAIN_ID=42` set on both machines.
+For terminal commands and the full launch order, see the **Laptop Terminals** section in [Developer_Guide.md](Developer_Guide.md). Terminals must be started in order: SLAM → Nav2 → Navigation node → Mission Coordinator. RPi-side nodes are launched separately on the Raspberry Pi with `ROS_DOMAIN_ID=42` set on both machines.
 
 ---
 
 ## Visualisation and Debugging
 
-For monitoring commands (`ros2 topic echo`), manual pause/resume testing, and `TEST_MODE` usage, see the **Testing guide** section in [Developer Guide.md](Developer%20Guide.md).
+For monitoring commands (`ros2 topic echo`), manual pause/resume testing, and `TEST_MODE` usage, see the **Testing guide** section in [Developer_Guide.md](Developer_Guide.md).
