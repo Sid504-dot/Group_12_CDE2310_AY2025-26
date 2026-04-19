@@ -28,11 +28,3 @@ A separate 12.6 V, 1800 mAh battery/power source is used for the JF-0826B soleno
 ### Component Testing Scripts
 
 [Component Testing](./testing_code)
-
-### Schematic
-
-[Schematic](./Schematic)
-
-### Test Image
-
-[Test Image](./test.jpg)
