@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-dock_controller_revised7.py — Runs on RPi
+dock_controller_revised2.py — Runs on RPi
 ==========================================
 Simplest possible docking: when tag detected, drive straight toward it.
 

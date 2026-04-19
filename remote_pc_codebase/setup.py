@@ -1,0 +1,67 @@
+from setuptools import setup
+import os
+from glob import glob
+
+package_name = 'auto_nav'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=[package_name],
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+         ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+    ],
+    install_requires=[
+        'setuptools',
+        'numpy',
+    ],
+    zip_safe=True,
+    maintainer='nus',
+    maintainer_email='nus@todo.todo',
+    description='Nav2-based frontier exploration manager for TurtleBot3 Burger',
+    license='TODO: License declaration',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'r2mover = auto_nav.r2mover:main',
+            'r2moverotate = auto_nav.r2moverotate:main',
+            'r2scanner = auto_nav.r2scanner:main',
+            'r2occupancy = auto_nav.r2occupancy:main',
+            'r2occupancy2 = auto_nav.r2occupancy2:main',
+            'zauto_nav = auto_nav.zauto_nav:main',
+            'frontier_nav_node = auto_nav.frontier_nav_node:main',
+            'siddarth_code = auto_nav.siddarth_code:main',
+            'siddarth_nav = auto_nav.siddarth_nav:main',
+	    'custom_navigator = auto_nav.custom_navigator:main',
+            'pp_frontier_nav = auto_nav.pp_frontier_nav:main',
+            'gap_nav = auto_nav.gap_nav:main',
+            'nav2_gap_nav = auto_nav.nav2_gap_nav:main',
+            'gap_nav_improved = auto_nav.gap_nav_improved:main',
+            'nav2_gap_nav_sid = nav2_gap_nav_sid:main',
+            'sid_nav2_gap_nav = auto_nav.sid_nav2_gap_nav:main',
+            'working_gap_nav = auto_nav.working_gap_nav:main',
+            'sid_working_nav = auto_nav.sid_working_nav:main',
+            'mission_coordinator = auto_nav.mission_coordinator:main', 
+            'v1_nav_modified = auto_nav.v1_nav_modified:main', 
+            'mission_coordinator_rev = auto_nav.mission_coordinator_rev:main', 
+            'sid_working_nav_rev = auto_nav.sid_working_nav_rev:main',
+            'sid_navv_fix = auto_nav.sid_navv_fix:main',
+            'mission_coordinator_old = auto_nav.mission_coordinator_old:main',
+            'sid_working_nav_old = auto_nav.sid_working_nav_old:main',
+            'dock_controller_revised6 = auto_nav.dock_controller_revised6:main',
+            'dock_controller_revised7 = auto_nav.dock_controller_revised7:main',
+            'nav_v1 = auto_nav.nav_v1:main',
+            'nav_try2 = auto_nav.nav_try2:main',
+            'nav_try3 = auto_nav.nav_try3:main',
+            'dock_controller_revised10 = auto_nav.dock_controller_revised10:main',
+            'dock_controller_revised13 = auto_nav.dock_controller_revised13:main',
+            'mission_coordinator_v2 = auto_nav.mission_coordinator_v2:main',
+            'mission_coordinator_v3 = auto_nav.mission_coordinator_v3:main',
+            'dock_controller_nav2 = auto_nav.dock_controller_nav2:main',
+        ],
+    },
+)
