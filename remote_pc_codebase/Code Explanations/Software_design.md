@@ -346,14 +346,14 @@ if self.state == self.EXPLORING:
     self._fire_sent         = False
     self._backup_done_latch = False
 
-    # V3: static has priority when both are simultaneously visible
+    # Static has priority when both are simultaneously visible
     if not self.static_done:
         tag = self._find_tag('static')
         if tag is not None:
             self._start_docking(tag, self.DOCKING_STATIC)
             return
 
-    # V3: no static_done gate — dynamic can trigger independently
+    # Dynamic check is independent — no static_done gate
     if not self.dynamic_done:
         tag = self._find_tag('dynamic_dock')
         if tag is not None:
@@ -382,18 +382,18 @@ This ensures the robot only acts on tags that are both fresh (seen within the la
 
 ---
 
-### Target Priority: V3 vs V2
+### Target Priority: Final vs Earlier Design
 
-In V2, the dynamic target sequence was gated behind full completion of the static sequence. If the dynamic marker was seen first, it was silently ignored:
+In an earlier version of the coordinator, the dynamic target sequence was gated behind full completion of the static sequence. If the dynamic marker was seen first, it was silently ignored:
 
 ```python
-# V2 behaviour (removed):
+# Earlier version behaviour (removed):
 if not self.static_done:
     self.get_logger().info('Ignoring dynamic tag because static_done=False')
     return
 ```
 
-V3 removes this gate entirely. Whichever target type is detected first is docked and fired immediately. This change makes the mission more robust — if the static target is obstructed or inaccessible early in the run, the robot can complete the dynamic sequence first and retry static later.
+The final version (`mission_coordinator_final.py`) removes this gate entirely. Whichever target type is detected first is docked and fired immediately. This change makes the mission more robust — if the static target is obstructed or inaccessible early in the run, the robot can complete the dynamic sequence first and retry static later. If both targets are visible simultaneously, static is still checked first as a conservative default.
 
 ---
 
@@ -574,17 +574,20 @@ This allows repeated dock-and-fire testing without restarting the node.
 
 ## Nav2 Configuration (`nav2_params_frontier.yaml`)
 
-The Nav2 stack is configured via `nav2_params_frontier.yaml`. Key settings and their rationale:
+The Nav2 stack is configured via `nav2_params_frontier.yaml`. Below are the key settings and the rationale behind each, including changes made during the run itself.
 
 ### Global Planner — SmacPlanner2D
 
 ```yaml
-allow_unknown: true
+GridBased:
+  plugin: "nav2_smac_planner/SmacPlanner2D"
+  tolerance: 0.20
+  allow_unknown: true
 ```
 
 Setting `allow_unknown: true` allows the planner to compute paths through unmapped cells. This is essential for frontier exploration — the robot must be able to plan routes toward areas it has not yet mapped. Without this, the planner refuses to route through unknown space and no frontier goals can be reached.
 
-However, this creates a subtle bug: gap goals placed in unknown space would be accepted by the node's validity filter (which only rejects occupied cells) but then cause the robot to follow a path into an unmapped wall. The fix is to require all gap goals to land in **known-free** cells:
+However, this creates a subtle bug: gap goals placed in unknown space would be accepted by the node's validity filter (which only rejects occupied cells) but then cause the robot to follow a path into an unmapped wall. The fix in `nav_final.py` is to require all gap goals to land in **known-free** cells:
 
 ```python
 gval = self.map_raw[cell[1], cell[0]]
@@ -592,13 +595,70 @@ if gval < 0 or gval >= OCC_THRESH:   # unknown (-1) or occupied → reject
     continue
 ```
 
-### Costmap Inflation
+---
+
+### MPPI Controller — Speed and Sampling
 
 ```yaml
-inflation_radius: 0.14
+FollowPath:
+  plugin: "nav2_mppi_controller::MPPIController"
+  time_steps: 56
+  batch_size: 2000
+  vx_max: 0.11
+  vx_min: -0.05
+  wz_max: 1.0
 ```
 
-The inflation radius must match `INFLATION_R` in the code (`0.15 m`). If they differ, the internal costmap used for goal filtering will disagree with Nav2's costmap, causing goals to be accepted by the node but rejected by Nav2. This was the root cause of INFLATE-BUG, where the code comment claimed 0.18 m while the YAML had 0.14 m.
+`vx_max` was lowered from 0.16 m/s to 0.11 m/s. At 0.16 m/s, the pipeline latency (costmap at 10 Hz + MPPI at 20 Hz, approximately 150 ms total) gave around 2.4 cm of blind travel per update cycle. At 0.11 m/s this is reduced to around 1.7 cm, giving more reaction margin when navigating near walls.
+
+`batch_size: 2000` means the controller samples 2000 candidate trajectories per cycle. A higher batch size improves trajectory quality at the cost of compute time. 2000 was found to be a practical balance on the laptop.
+
+---
+
+### Obstacle and Inflation Layers — Costmap Tuning
+
+#### Inflation Radius — Mid-Run Adjustment
+
+```yaml
+inflation_layer:
+  inflation_radius: 0.15
+  cost_scaling_factor: 5.4
+```
+
+We initially set `inflation_radius` to **0.13 m**. During the run, the robot was bumping into walls too frequently — the 0.13 m buffer was too tight for the robot body width in the test environment. We increased this to **0.15 m mid-run**, which added a larger safety margin around all obstacles and reduced wall collisions noticeably.
+
+This value must match `INFLATION_R` in `nav_final.py`. If they differ, the internal costmap used for goal filtering disagrees with Nav2's costmap, causing goals to be accepted by the node but rejected by Nav2.
+
+`cost_scaling_factor: 5.4` controls how steeply the inflation cost decays away from an obstacle. A higher value means cost falls off faster, so the planner still strongly prefers the centre of corridors despite the increased inflation radius.
+
+#### Phantom Wall Bug — Raytrace Range Mismatch
+
+```yaml
+obstacle_layer:
+  observation_sources: scan
+  scan:
+    obstacle_max_range: 2.5
+    raytrace_max_range: 2.5   # fixed — was previously 2.0
+```
+
+In an earlier configuration, `obstacle_max_range` was 2.5 m but `raytrace_max_range` was only 2.0 m. This caused a phantom wall problem: cells between 2.0 and 2.5 m were **marked** as occupied when an obstacle was detected there, but they were never **cleared** by raytrace as the robot moved past (because raytrace only clears up to its own range). These stale phantom cells persisted in the costmap and forced SmacPlanner2D to route around them — sometimes into real walls. Setting both values to 2.5 m fixed this.
+
+#### Collision Margin
+
+```yaml
+ObstaclesCritic:
+  collision_margin_distance: 0.30   # raised from 0.20
+```
+
+Raising `collision_margin_distance` from 0.20 m to 0.30 m means the MPPI controller starts penalising trajectories that approach within 0.30 m of obstacles rather than 0.20 m. With `inflation_radius = 0.15 m`, the 0.20 m margin barely overlapped the inflated zone before the robot was already close to the wall. At 0.30 m, MPPI begins deflecting trajectories 15 cm before entering the inflation zone, providing earlier course correction.
+
+#### Robot Footprint
+
+```yaml
+footprint: "[[0.26, 0.13], [0.26, -0.13], [-0.13, -0.13], [-0.13, 0.13]]"
+```
+
+An explicit rectangular footprint is used rather than a circular `robot_radius`. This more accurately represents the TurtleBot3 Burger's actual shape. Mismatched footprints between the global and local costmaps (where the global planner approves a path that the local controller then treats as a collision) were a known issue that explicit matching footprint values prevent.
 
 ---
 
@@ -612,7 +672,7 @@ The initial gap scoring formula penalised gaps with farther walls rather than re
 # WRONG — penalises safe gaps (farther wall = higher score = worse)
 score = W_OPEN_ALIGN * align_cost + W_GAP_DIST * d_edge
 
-# CORRECT — rewards safer gaps (farther wall = lower score = better)
+# CORRECT — rewards safer gaps (wider opening = lower score = better)
 score = W_OPEN_ALIGN * align_cost - W_OPEN_WIDTH * span_deg
 ```
 
@@ -620,11 +680,15 @@ Since the goal is to **minimise** score, the `+` sign meant the robot consistent
 
 **Lesson:** When implementing minimisation-based scoring, verify every term's sign. A reward should subtract from the score; a penalty should add.
 
+---
+
 ### Stuck Detection Threshold Too Loose
 
 The original thresholds (0.20 m, 6.0 s) meant a robot oscillating against a wall could move 20 cm in 6 seconds without escaping — stuck detection never fired. The fix was to measure actual oscillation distances during a real stuck event and tighten to 0.25 m over 3.5 s.
 
 **Lesson:** Stuck detection thresholds must be validated against real hardware, not estimated. An oscillating robot covers more distance than intuition suggests.
+
+---
 
 ### Pause Not Blacklisting Current Goal (INT-BUG 1)
 
@@ -639,6 +703,8 @@ self.state = 'PAUSED'
 
 **Lesson:** When interrupting an in-progress action, explicitly invalidate the interrupted state. Simply stopping is not enough if the resume path can reconstruct the same state.
 
+---
+
 ### Nav Result Firing During Pause (INT-BUG 2)
 
 The `_on_nav_result` callback fired while `_paused=True` and transitioned state from `NAVIGATING` to `GAP_SELECT`, causing the node to select a new goal even while paused.
@@ -651,11 +717,29 @@ if not self._paused and self.state == 'NAVIGATING':
 
 **Lesson:** Asynchronous callbacks must always check whether the system is in a state where acting on their result is valid.
 
-### V2 Static-First Gate
+---
 
-V2 required the static target to be fully completed before the dynamic target could be engaged. In environments where the dynamic marker was encountered much earlier, this caused significant wasted exploration time.
+### Static-First Gate in Earlier Version
+
+An earlier version of the coordinator required the static target to be fully completed before the dynamic target could be engaged. In environments where the dynamic marker was encountered much earlier, this caused significant wasted exploration time. The final version removes this gate.
 
 **Lesson:** Rigid ordering constraints in a mission FSM should be justified by physical necessity. If the ordering does not matter mechanically, remove the gate.
+
+---
+
+### Inflation Radius Too Small (Mid-Run Fix)
+
+The initial `inflation_radius` of 0.13 m was insufficient for the test environment. The robot was clipping walls because the safety buffer was too narrow for the actual corridor widths being navigated. Increasing to 0.15 m mid-run resolved the wall collision issue.
+
+**Lesson:** Costmap inflation radius should be validated in the actual test environment before the run. What works in simulation or a wide-open space may be too tight in a real corridor.
+
+---
+
+### Phantom Wall Bug (Raytrace Range Mismatch)
+
+Setting `obstacle_max_range` larger than `raytrace_max_range` caused cells to be marked as occupied but never cleared as the robot moved past. These persistent stale cells blocked path planning. Matching both values to 2.5 m eliminated the phantom walls.
+
+**Lesson:** In Nav2 costmaps, `raytrace_max_range` must always be ≥ `obstacle_max_range`. If they differ, the clearing raytrace cannot undo what the marking step wrote.
 
 ---
 
@@ -663,8 +747,8 @@ V2 required the static target to be fully completed before the dynamic target co
 
 ### Navigation Node (`nav_final.py`)
 
-| Parameter | Default | Effect | When to Change |
-|-----------|---------|--------|----------------|
+| Parameter | Final Value | Effect | When to Change |
+|-----------|-------------|--------|----------------|
 | `OPEN_THRESH_M` | 1.00 m | Minimum sector median to be considered open | Lower if valid gaps are being missed; raise if robot tries unsafe gaps |
 | `MIN_OPEN_DEG` | 40° | Minimum opening angular width | Lower to allow narrower gaps; raise if robot attempts impossible spaces |
 | `OPEN_GOAL_D` | 0.90 m | How far ahead the gap goal is placed | Lower in small rooms; raise in large open spaces |
@@ -678,14 +762,25 @@ V2 required the static target to be fully completed before the dynamic target co
 
 ### Mission Coordinator (`mission_coordinator_final.py`)
 
-| Parameter | Default | Effect | When to Change |
-|-----------|---------|--------|----------------|
+| Parameter | Final Value | Effect | When to Change |
+|-----------|-------------|--------|----------------|
 | `DETECTION_RANGE_M` | 1.5 m | Maximum tag range to trigger docking | Lower if robot docks from too far; raise if nearby tags are ignored |
 | `DOCK_LOST_DEBOUNCE_S` | 8.0 s | How long tag must be lost before aborting | Lower if robot hangs on a lost tag; raise if noise causes premature aborts |
 | `DOCK_TIMEOUT_S` | 45.0 s | Maximum dock+fire cycle duration | Raise if docking takes longer due to slow visual servoing |
 | `WAITING_DYNAMIC_TIMEOUT_S` | 30.0 s | How long to wait for receptacle tag | Raise if the dynamic target mechanism moves slowly |
 | `DYNAMIC_BALL_COUNT` | 3 | Number of balls to fire at dynamic target | Change to match physical ball count loaded |
 | `TAG_STALE_S` | 1.0 s | Age at which a detection is discarded | Lower in fast-moving scenarios; raise if camera publishes infrequently |
+
+### Nav2 YAML (`nav2_params_frontier.yaml`)
+
+| Parameter | Final Value | Effect | Notes |
+|-----------|-------------|--------|-------|
+| `inflation_radius` | 0.15 m | Obstacle padding in both costmaps | Raised from 0.13 m mid-run due to wall collisions. Must match `INFLATION_R` in `nav_final.py` |
+| `cost_scaling_factor` | 5.4 | How steeply inflation cost decays | Raise if robot still hugs walls; lower if paths avoid open corridors |
+| `collision_margin_distance` | 0.30 m | How early MPPI penalises near-wall trajectories | Raised from 0.20 m for earlier deflection from walls |
+| `raytrace_max_range` | 2.5 m | How far the costmap clears cells | Must be ≥ `obstacle_max_range` to avoid phantom walls |
+| `vx_max` | 0.11 m/s | Maximum forward speed for MPPI | Lower if wall collisions persist; raise in open environments |
+| `allow_unknown` | true | Whether planner routes through unmapped space | Must be `true` for frontier exploration |
 
 ---
 
