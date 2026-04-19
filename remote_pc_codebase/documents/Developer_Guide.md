@@ -131,7 +131,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: Pauses or resumes navigation. Pause is idempotent: it aborts any active backup, cancels any active Nav2 goal, blacklists the current goal, stops the robot, and sets the state to PAUSED. Resume is also idempotent: it clears the current goal and transitions to GAP_SELECT for fresh goal selection.
 
-![_nav_cmd_cb (pause / resume)](flow_chart_diagrams/_nav_cmd_cb_pause_resume_.png)
+![_nav_cmd_cb (pause / resume)](flow_chart_diagrams/_nav_cmd_cb.png)
 
 **_get_pose:**
 
@@ -188,7 +188,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: A tuple (gx, gy) of the best gap goal coordinates, or None if no valid gap exists.
 - Effects: Bins LiDAR rays into 20° sectors, takes the median range per sector, marks sectors with median > 1.0 m as open, clusters adjacent open sectors into contiguous openings, discards openings narrower than 40°, places a goal 0.9 m along the opening's centre direction, then validates and scores all candidates.
 
-![_select_gap (gap detection)](flow_chart_diagrams/_select_gap_gap_detection_.png)
+![_select_gap (gap detection)](flow_chart_diagrams/_select_gap.png)
 
 **_select_frontier:**
 
@@ -203,7 +203,7 @@ The main navigation control node for the Turtlebot ICBM. It performs autonomous 
 - Returns: None
 - Effects: The main goal selection loop running at `FRONTIER_HZ`. Publishes the current navigation state. In the `GAP_SELECT` state: rebuilds the costmap if dirty, tries `_select_gap()` first, falls back to `_select_frontier()` if no gap is found. If both fail, clears the normal blacklist and retries. After `NO_FRONTIER_RETRIES` consecutive failures, checks if any frontier cells remain in the map — if none, transitions to DONE. If the state is `NAVIGATING`, checks for goal timeout.
 
-![_goal_tick (goal selection)](flow_chart_diagrams/_goal_tick__goal_selection_.png)
+![_goal_tick (goal selection)](flow_chart_diagrams/_goal_tick.png)
 
 **_send_nav2_goal:**
 
