@@ -1,0 +1,233 @@
+amcl:
+  ros__parameters:
+    use_sim_time: false
+
+bt_navigator:
+  ros__parameters:
+    use_sim_time: false
+    global_frame: map
+    robot_base_frame: base_footprint
+    odom_topic: /odom
+    bt_loop_duration: 10
+    default_server_timeout: 20
+
+behavior_server:
+  ros__parameters:
+    use_sim_time: false
+    local_costmap_topic: local_costmap/costmap_raw
+    global_costmap_topic: global_costmap/costmap_raw
+    local_footprint_topic: local_costmap/published_footprint
+    global_footprint_topic: global_costmap/published_footprint
+    cycle_frequency: 10.0
+    behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+    spin:
+      plugin: "nav2_behaviors/Spin"
+    backup:
+      plugin: "nav2_behaviors/BackUp"
+    drive_on_heading:
+      plugin: "nav2_behaviors/DriveOnHeading"
+    wait:
+      plugin: "nav2_behaviors/Wait"
+    global_frame: map
+    robot_base_frame: base_footprint
+    transform_tolerance: 0.3
+
+controller_server:
+  ros__parameters:
+    cmd_vel_topic: /cmd_vel_nav
+    use_sim_time: false
+    controller_frequency: 20.0
+    min_x_velocity_threshold: 0.001
+    min_y_velocity_threshold: 0.0
+    min_theta_velocity_threshold: 0.001
+    failure_tolerance: 0.5
+    goal_checker_plugins: ["general_goal_checker"]
+    general_goal_checker:
+      plugin: "nav2_controller::SimpleGoalChecker"
+      xy_goal_tolerance: 0.08
+      yaw_goal_tolerance: 0.10
+      stateful: true
+    controller_plugins: ["FollowPath"]
+    FollowPath:
+      plugin: "nav2_mppi_controller::MPPIController"
+      time_steps: 56
+      model_dt: 0.05
+      batch_size: 2000
+      vx_std: 0.11
+      vy_std: 0.0
+      wz_std: 0.33
+      vx_max: 0.11                # lowered from 0.16. At 0.16 m/s the pipeline
+                                   # latency (~150 ms: costmap 10 Hz + MPPI 20 Hz)
+                                   # gives ~2.4 cm blind travel. 0.13 m/s cuts
+                                   # that to ~2.0 cm and reduces kinetic energy by
+                                   # ~34 %, giving more margin when Bug 1/3 fixes
+                                   # aren't quite enough.
+      vx_min: -0.05
+      vy_max: 0.0
+      wz_max: 1.0
+      ax_max: 0.4
+      ax_min: -0.4
+      az_max: 1.0
+      iteration_count: 2
+      prune_distance: 1.7
+      transform_tolerance: 0.1
+      temperature: 0.3
+      gamma: 0.015
+      motion_model: "DiffDrive"
+      visualize: false
+      critics: ["ConstraintCritic", "GoalCritic", "GoalAngleCritic", "PathAlignCritic", "PathFollowCritic", "PathAngleCritic", "PreferForwardCritic", "ObstaclesCritic"]
+      ConstraintCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 4.0
+      GoalCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        threshold_to_consider: 1.4
+      GoalAngleCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 3.0
+        threshold_to_consider: 0.5
+      PathAlignCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 3.0
+        max_path_occupancy_ratio: 0.08
+        trajectory_point_step: 3
+        threshold_to_consider: 0.5
+        offset_from_furthest: 8
+        use_path_orientations: false
+      PathFollowCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 5.0
+        offset_from_furthest: 3
+        threshold_to_consider: 1.4
+      PathAngleCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 2.0
+        offset_from_furthest: 4
+        threshold_to_consider: 0.5
+        max_angle_to_furthest: 1.0
+        mode: 0
+      PreferForwardCritic:
+        enabled: true
+        cost_power: 1
+        cost_weight: 8.0
+        threshold_to_consider: 0.5
+      ObstaclesCritic:
+        enabled: true
+        cost_power: 1
+        repulsion_weight: 3.0
+        critical_weight: 20.0
+        consider_footprint: true
+        collision_margin_distance: 0.30  # raised from 0.20. With inflation_radius=0.13,
+                                          # the 0.20 m margin barely overlapped the
+                                          # inflated zone before the robot was already
+                                          # close to the wall. 0.30 m means MPPI starts
+                                          # penalising trajectories 10 cm before entering
+                                          # the inflation zone — earlier deflection.
+        near_goal_distance: 0.5
+
+planner_server:
+  ros__parameters:
+    use_sim_time: false
+    expected_planner_frequency: 3.0
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_smac_planner/SmacPlanner2D"
+      tolerance: 0.20
+      max_iterations: 100000
+      allow_unknown: true
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      use_sim_time: false
+      global_frame: map
+      robot_base_frame: base_footprint
+      resolution: 0.05
+      track_unknown_space: true
+      publish_frequency: 1.0
+      update_frequency: 2.0
+      rolling_window: false
+      transform_tolerance: 0.3
+      # Consistent footprint used in both costmaps — global planner and
+      # local controller must agree on the collision boundary.
+      footprint: "[[0.26, 0.13], [0.26, -0.13], [-0.13, -0.13], [-0.13, 0.13]]"
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: true
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+          raytrace_max_range: 2.5  # BUG FIX (PHANTOM-WALL-BUG): was 2.0.
+                                   # obstacle_max_range=2.5 > raytrace_max_range=2.0
+                                   # meant cells 2.0–2.5 m away were MARKED but never
+                                   # CLEARED by raytrace as the robot moved past. Those
+                                   # stale phantom cells forced SmacPlanner to route
+                                   # around them — sometimes into real walls.
+                                   # Now matches obstacle_max_range exactly.
+          raytrace_min_range: 0.0
+          clearing: true
+          marking: true
+          data_type: "LaserScan"
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        inflation_radius: 0.15    # reduced from 0.15 — allows ~30cm corridors.
+                                  # At 0.15m, a 30cm corridor inflated to 0cm and
+                                  # SmacPlanner2D could not find any valid path.
+                                  # At 0.10m, 30cm corridor retains 10cm of
+                                  # navigable width (30 - 2×10 = 10cm).
+                                  # Must match INFLATION_R in nav2_gap_nav.py.
+        cost_scaling_factor: 5.4  # raised from 5.7 to compensate for smaller radius.
+                                  # Higher scaling means cost decays faster away from
+                                  # obstacles, so the planner still strongly prefers
+                                  # the corridor centre despite the looser radius.
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      use_sim_time: false
+      global_frame: odom
+      robot_base_frame: base_footprint
+      resolution: 0.05
+      rolling_window: true
+      width: 3
+      height: 3
+      publish_frequency: 5.0
+      update_frequency: 10.0
+      track_unknown_space: true
+      transform_tolerance: 0.3
+      # Must match global_costmap footprint — mismatched footprints cause
+      # SmacPlanner2D to plan paths that MPPI then considers as collisions.
+      footprint: "[[0.24, 0.13], [0.24, -0.13], [-0.13, -0.13], [-0.13, 0.13]]"
+      plugins: ["obstacle_layer", "inflation_layer"]
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: true
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          obstacle_max_range: 2.0
+          obstacle_min_range: 0.0
+          raytrace_max_range: 1.5  # matches obstacle_max_range — same reasoning as global
+          raytrace_min_range: 0.0
+          clearing: true
+          marking: true
+          data_type: "LaserScan"
+      inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        inflation_radius: 0.15    # must match global_costmap value
+        cost_scaling_factor: 5.4  # must match global_costmap value
